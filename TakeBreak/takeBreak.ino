@@ -9,8 +9,11 @@
  Echo to Arduino pin 7 
  Trig to Arduino pin 8
  
+ This program can be found at : https://github.com/sashipenta/iot/blob/master/TakeBreak/takeBreak.ino
+ 
  Reference:
- Ultrasonic distance example is used from :http://arduinobasics.blogspot.com/2012/11/arduinobasics-hc-sr04-ultrasonic-sensor.html 
+ Ultrasonic distance example is used from :
+               http://arduinobasics.blogspot.com/2012/11/arduinobasics-hc-sr04-ultrasonic-sensor.html 
  */
 
 
