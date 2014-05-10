@@ -1,5 +1,5 @@
 /*
- Take Break Program : This program is used to take break from work after sometime continuously at office. To demo I
+ Take Break Program : This program is used to take break from work after sometime continuously at office. 
  
  Author : Sashi Kumar Penta
  
@@ -29,7 +29,8 @@ int inCount = 0;     // In office count - each count corresponds to t ms
 int outCount = 0;    // Out count - just so to avoid accidental/noisy readings. 
 
 int inThreshold = 100; // 100 count means : 100 * t = 100 * 50 = 5000 ms = 5 seconds 
-                       // (For demo we are saying take break after every 5 seconds, in reality this number will be much higher)
+                       // (For demo we are saying take break after every 5 seconds, in reality 
+                       // this number will be much higher)
                        
 int outThreshold = 10; // This is much small.. just to avoid accidental readings.
 
