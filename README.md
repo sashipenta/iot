@@ -1,7 +1,7 @@
 Internet of Things
 ===
 
-Here are some projects releated to Internet of things.
+Here are some projects related to Internet of things.
 
 Project 1 : Take break
 
