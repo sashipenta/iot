@@ -16,7 +16,9 @@
                http://arduinobasics.blogspot.com/2012/11/arduinobasics-hc-sr04-ultrasonic-sensor.html 
  */
 
+#include <Adafruit_NeoPixel.h>
 
+#define PIN 6     // LED Strip Pin
 #define echoPin 7 // Echo Pin
 #define trigPin 8 // Trigger Pin
 #define LEDPin 13 // Onboard LED
@@ -37,11 +39,73 @@ int inThreshold = 100; // 100 count means : 100 * t = 100 * 50 = 5000 ms = 5 sec
                        
 int outThreshold = 10; // This is much small.. just to avoid accidental readings.
 
+// Parameter 1 = number of pixels in strip
+// Parameter 2 = Arduino pin number (most are valid)
+// Parameter 3 = pixel type flags, add together as needed:
+//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
+//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
+//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
+
 void setup() {
  Serial.begin (9600);
  pinMode(trigPin, OUTPUT);
  pinMode(echoPin, INPUT);
  pinMode(LEDPin, OUTPUT); // Use LED indicator (if required)
+ 
+ strip.begin();
+ strip.show(); // Initialize all pixels to 'off'
+}
+
+// Fill the dots one after the other with a color
+void lightStrip(int num, int high) {
+
+  // Number of leds to light  
+  int k = 0;
+ 
+  k = (float) num * strip.numPixels() / high;
+  
+  // at least 1 pixel (to show you are in range)
+  k = max(k, 1);
+  // No more than number of pixels
+  k = min(k, strip.numPixels());
+  
+  for(uint16_t i=0; i<= k; i++) {
+      strip.setPixelColor(i, strip.Color(10, 10, 10));
+  }
+  
+  for(uint16_t i=k; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, strip.Color(0,0,0));
+  }
+  
+  strip.show();
+}
+
+void lightStripOff() {
+  
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, strip.Color(0,0,0));
+  }
+  
+  strip.show();
+}
+
+void lightStripBlink() {
+  
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, strip.Color(10,0,0));
+  }
+  
+  strip.show();
+  
+  delay(500);
+  
+  for(uint16_t i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, strip.Color(0,0,0));
+  }
+  
+  strip.show();
 }
 
 void loop() {
@@ -72,10 +136,17 @@ void loop() {
    if(distance < distanceThreshold)
    {
      inCount++;
-     if(inCount > inThreshold) // 50ms * 100 = 5000ms = 5 seconds (Break after 5 seconds)
+     
+     // Light as much progress we made
+     lightStrip(inCount, inThreshold);
+     
+     if(inCount >= inThreshold) // 50ms * 100 = 5000ms = 5 seconds (Break after 5 seconds)
      {
        outCount = 0;
        digitalWrite(LEDPin, HIGH); 
+       
+       // Special blink
+       lightStripBlink();
      }
    }
    else
@@ -85,6 +156,10 @@ void loop() {
      if(outCount > outThreshold) // 10 for noise???
      {
        inCount = 0;
+       
+       // away for some time no lights should be on
+       lightStripOff();
+       
        digitalWrite(LEDPin, LOW);
      }
    }
