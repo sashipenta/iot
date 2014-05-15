@@ -9,6 +9,11 @@
  Echo to Arduino pin 7 
  Trig to Arduino pin 8
  
+ Parameters
+   inTime (in seconds) : indicates in what time intervals you want to take break
+   distanceThreshold (in cms) : how close to the sensor is considered that you are inside
+   brightness (0-255) : brightness of the led strip
+ 
  This program can be found at : https://github.com/sashipenta/iot/blob/master/TakeBreak/takeBreak.ino
  
  Reference:
@@ -33,11 +38,16 @@ int t = 50;
 int inCount = 0;     // In office count - each count corresponds to t ms
 int outCount = 0;    // Out count - just so to avoid accidental/noisy readings. 
 
+int inTime = 900;      // in seconds
+
+// This value is overwritten to inTime * 20 in setup
 int inThreshold = 100; // 100 count means : 100 * t = 100 * 50 = 5000 ms = 5 seconds 
                        // (For demo we are saying take break after every 5 seconds, in reality 
                        // this number will be much higher)
                        
 int outThreshold = 10; // This is much small.. just to avoid accidental readings.
+
+int brightness = 20;
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -56,6 +66,8 @@ void setup() {
  
  strip.begin();
  strip.show(); // Initialize all pixels to 'off'
+ 
+ inThreshold = inTime * 20;
 }
 
 // Fill the dots one after the other with a color
@@ -72,7 +84,7 @@ void lightStrip(int num, int high) {
   k = min(k, strip.numPixels());
   
   for(uint16_t i=0; i<= k; i++) {
-      strip.setPixelColor(i, strip.Color(10, 10, 10));
+      strip.setPixelColor(i, strip.Color(brightness, brightness, brightness));
   }
   
   for(uint16_t i=k; i<strip.numPixels(); i++) {
@@ -94,7 +106,7 @@ void lightStripOff() {
 void lightStripBlink() {
   
   for(uint16_t i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, strip.Color(10,0,0));
+      strip.setPixelColor(i, strip.Color(brightness,0,0));
   }
   
   strip.show();
